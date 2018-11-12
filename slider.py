@@ -77,15 +77,15 @@ if Parts.OK:
             StartUp.addField('Slider?:', False)
         #StartUp.addText('')
         StartUp.addField('# Template Runs?:', 0)
-        StartUp.addField('# Stat Learning Runs?:', 6)
+        StartUp.addField('# Stat Learning Runs?:', 0)
         StartUp.addField('# Outcome Runs?:', 1)
         StartUp.addField('# Pair Exposures (Stat/Template):', 5)
         StartUp.addField('# Frequency Judgments (Numerosity):', 12)
         StartUp.addField('# Repetitions (Associative/Search):', 3)
         StartUp.addField('% Targets (Visual Search):', 100)
         StartUp.addField('% Rectangles (Stat/Template):', 10)
-        StartUp.addField('# Trials (Slider):', 64)
-        StartUp.addField('Duration in s (Slider):', 15)
+        StartUp.addField('# Trials (Slider):', 3)
+        StartUp.addField('Duration in s (Slider):', 60)
 
 
         StartUp.show()
@@ -131,8 +131,8 @@ if Parts.OK:
 
             # calculate how long the whole experiment will take
             # How long does one run take in seconds, when settings are set to 1?
-            _times = np.array([58, 43, 69, 97, 69, 97, 64, 64, sDur+1])
-            multipliers = np.array([exposures, nums, encodings, 1, encodings, 1, encodings, 1, sTrials])
+            _times = np.array([58, 43, 69, 97, 69, 97, 64, 64, int(sDur+1)]).astype(int)
+            multipliers = np.array([exposures, nums, encodings, 1, encodings, 1, encodings, 1, int(sTrials)]).astype(int)
             __total_time = _times * multipliers  # array with total times for each task
             _total_time = np.array([__total_time[0],
                                     __total_time[1],
@@ -920,7 +920,7 @@ def stat_learning(IDnum, exposures, pairset, percent, trialn, run):
 
     # show instructions
     if run == 1:
-        instruction_screen('In this square-detection task, you will view a series of images, one after the other. Occasionally, one of these images will have a small grey square over top of it. If this happens, press the LEFT arrow. Otherwise, do not press anything.')
+        instruction_screen('In this square-detection task, you will view a series of images, one after the other. Occasionally, one of these images will have a small grey square over top of it. If this happens, press the LEFT arrow. Otherwise, press the RIGHT arrow.')
         instruction_screen('If you have any questions, please ask the experimenter now.', last=True)
     else:
         instruction_screen('You will now complete the same task again.', delay=2, last=True)
@@ -1029,7 +1029,7 @@ def full_exp(pairset, n_prepost, n_stat, n_differint, differint,
                 elif task == 'visual_search':
                     vis_search(IDnum, encodings=encodings, pairset=pairset, targets=targets, trialn=0, run=i+1)
                 elif task == 'slider':
-                    run_slider(sTrials, sDur, True, subject, stem, numOptions, allTrials, simDict,
+                    run_slider(sTrials, sDur, False, subject, stem, numOptions, allTrials, simDict,
                                answerDict, chanLists, superIm, nums1, fullornot)
             prenum = n_differint  # keep track of the number of outcome task runs that were done before
 
@@ -1061,7 +1061,7 @@ def full_exp(pairset, n_prepost, n_stat, n_differint, differint,
                 elif task == 'slider':
                     run_slider(3, 10, True, IDnum, stem, numOptions, allTrials, simDict,
                                answerDict, chanLists, superIm, nums1, fullornot, practise=True)
-                    run_slider(sTrials, sDur, True, IDnum, stem, numOptions, allTrials, simDict,
+                    run_slider(sTrials, sDur, False, IDnum, stem, numOptions, allTrials, simDict,
                                answerDict, chanLists, superIm, nums1, fullornot)
                     plotTrials=True
     if parts != "Part 1":

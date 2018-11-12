@@ -117,9 +117,9 @@ def run_slider(Trials, trialTime, limitScale, subject, stem, numOptions, allTria
     synthIm = visual.ImageStim(slwin, pos=(0, 100), size=(300, 300))
     synthMask = visual.ImageStim(slwin, pos=(0, 100), size=(300, 300))
     # slider components
-    line = visual.Rect(slwin, pos=(0, -150), width=700, height=8, units='pix', color=(1, 1, 1))
-    edge1 = visual.Rect(slwin, pos=(-350, -150), width=8, height=30, units='pix', color=(1, 1, 1))
-    edge2 = visual.Rect(slwin, pos=(350, -150), width=8, height=30, units='pix', color=(1, 1, 1))
+    flatline = visual.Rect(slwin, pos=(0, -150), width=700, height=8, units='pix', fillColor=(1,1,1))
+    edge1 = visual.Rect(slwin, pos=(-350, -150), width=8, height=30, units='pix', fillColor=(1, 1, 1))
+    edge2 = visual.Rect(slwin, pos=(350, -150), width=8, height=30, units='pix', fillColor=(1, 1, 1))
     circle = visual.Circle(slwin, radius=14, units='pix', fillColor=moveColor, lineWidth=2, lineColor=(1, 1, 1))
     # timer components
     hGheight = 250
@@ -221,7 +221,7 @@ def run_slider(Trials, trialTime, limitScale, subject, stem, numOptions, allTria
                 sand.fillColor = (-1, -1, 1)
             sandPos = (-300, (100 - (hGheight / 2)) + (sandHeight / 2))
             # draw all the stuff
-            line.draw()
+            flatline.draw()
             edge1.draw()
             edge2.draw()
             hourGlass.draw()
@@ -306,9 +306,24 @@ def run_slider(Trials, trialTime, limitScale, subject, stem, numOptions, allTria
 def plot_trials(subject, Trials, trialTime):
     nColumns = int(np.ceil(Trials/8))
     fig, axes = plt.subplots(8, nColumns, sharex=True, sharey=True, figsize=(nColumns * 3, 8))
-    for i, ax in zip(range(Trials), axes.flat):
-        # reduce = MasterDat[MasterDat['Trial'] == i]
-        reduce = pd.read_csv('Data/{}-{}.csv'.format(subject, i))
+    sim1, sim2, sim3, sim4 = [], [], [], []
+    sims = [sim1, sim2, sim3, sim4]
+    EndDict = {}
+    for i in range(Trials):
+        fname = 'Data/{}-{}.csv'.format(subject, i)
+        reduce = pd.read_csv(fname)
+        simLevel = reduce['Sim'].iloc[0]
+        EndDict[reduce['CorrectImage'].iloc[0]] = simLevel
+        sims[int(simLevel)-1].append(fname)
+    sim1.extend(sim2)
+    sim1.extend(sim3)
+    sim1.extend(sim4)
+    StimNames = list(EndDict.keys())
+    StimSims = list(EndDict.values())
+    print(StimNames)
+    print(StimSims)
+    for i, ax in zip(sim1, axes.flat):
+        reduce = pd.read_csv(i)
         corr = reduce['Correct'].iloc[0]
         opts = reduce['Options'].iloc[0]
         corrBase = ((int(corr) / opts) * 700) - 350
