@@ -203,7 +203,7 @@ def run_slider(Trials, trialTime, limitScale, subject, stem, numOptions, allTria
         else:
             corrInd = answerDict[channel]
         masks = list(np.random.choice(50, numOptions, replace=True))
-        masks = ['mask{}.png'.format(i) for i in masks]
+        masks = ['mask{}.png'.format(msk) for msk in masks]
         frame = 0  # reset frame
         counter = 0  # reset delay
         rawTimer.reset()
